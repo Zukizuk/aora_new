@@ -11,36 +11,46 @@ final routerProvider = Provider<GoRouter>(
     final authState = ref.watch(authProvider);
     final authNotifier = ref.watch(authProvider.notifier);
     return GoRouter(
-      routes: [
-        GoRoute(
+        initialLocation: '/',
+        routes: [
+          GoRoute(
             name: 'home',
             path: '/',
+            builder: (_, __) => const Layout(),
+          ),
+          GoRoute(
+            name: Layout.name,
+            path: '/signup',
             builder: (_, __) {
-              return authState.status == AuthStatus.authenticated
-                  ? const Layout()
-                  : SignInPage(onSignin: (email, password) async {
-                      await authNotifier.login(email, password);
-                    });
-            }),
-        GoRoute(
-          name: Layout.name,
-          path: '/signup',
-          builder: (_, __) {
-            return SignUpPage(onSignup: (name, email, password) async {
-              await authNotifier.signup(name, email, password);
-            });
-          },
-        ),
-        GoRoute(
-          name: SignInPage.name,
-          path: '/signin',
-          builder: (_, __) {
-            return SignInPage(onSignin: (email, password) async {
-              await authNotifier.login(email, password);
-            });
-          },
-        ),
-      ],
-    );
+              return SignUpPage(onSignup: (name, email, password) async {
+                await authNotifier.signup(name, email, password);
+              });
+            },
+          ),
+          GoRoute(
+            name: SignInPage.name,
+            path: '/signin',
+            builder: (_, __) {
+              return SignInPage(onSignin: (email, password) async {
+                await authNotifier.login(email, password);
+              });
+            },
+          ),
+        ],
+        redirect: (context, state) {
+          final location = state.matchedLocation;
+          if (location == '/signup' || location == '/signin') {
+            if (authState.status == AuthStatus.authenticated) {
+              return '/';
+            }
+          }
+
+          if (location == '/') {
+            if (authState.status == AuthStatus.unauthenticated) {
+              return '/signin';
+            }
+          }
+          return null;
+        });
   },
 );
