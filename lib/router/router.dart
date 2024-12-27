@@ -1,40 +1,33 @@
-import 'dart:convert';
-import 'package:aora_new/appwrite/appwrite.dart';
+import 'package:aora_new/auth_notifier/auth_notifier.dart';
+import 'package:aora_new/auth_notifier/auth_state.dart';
 import 'package:aora_new/components/layouts/layout.dart';
 import 'package:aora_new/pages/sign_in_page.dart';
 import 'package:aora_new/pages/sign_up_page.dart';
-import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final routerProvider = Provider<GoRouter>(
   (ref) {
+    final authState = ref.watch(authProvider);
+    final authNotifier = ref.watch(authProvider.notifier);
     return GoRouter(
       routes: [
         GoRoute(
-          name: SignInPage.name,
-          path: '/',
-          builder: (_, __) {
-            return SignInPage(onSignin: (email, password) async {
-              debugPrint('email: $email, password: $password');
-              final appwrite = GetIt.instance.get<Appwrite>();
-              final session =
-                  await appwrite.createEmailSession(email, password);
-              debugPrint(jsonEncode(session?.toMap() ?? '{}'));
-            });
-          },
-        ),
+            name: 'home',
+            path: '/',
+            builder: (_, __) {
+              return authState.status == AuthStatus.authenticated
+                  ? const Layout()
+                  : SignInPage(onSignin: (email, password) async {
+                      await authNotifier.login(email, password);
+                    });
+            }),
         GoRoute(
           name: Layout.name,
           path: '/signup',
           builder: (_, __) {
             return SignUpPage(onSignup: (name, email, password) async {
-              debugPrint('name: $name, email: $email, password: $password');
-              final appwrite = GetIt.instance.get<Appwrite>();
-              final user = await appwrite.createAccount(name, email, password);
-
-              debugPrint(jsonEncode(user ?? '{}'));
+              await authNotifier.signup(name, email, password);
             });
           },
         ),
@@ -43,11 +36,7 @@ final routerProvider = Provider<GoRouter>(
           path: '/signin',
           builder: (_, __) {
             return SignInPage(onSignin: (email, password) async {
-              debugPrint('email: $email, password: $password');
-              final appwrite = GetIt.instance.get<Appwrite>();
-              final session =
-                  await appwrite.createEmailSession(email, password);
-              debugPrint(jsonEncode(session?.toMap() ?? '{}'));
+              await authNotifier.login(email, password);
             });
           },
         ),
