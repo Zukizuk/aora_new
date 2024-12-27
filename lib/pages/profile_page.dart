@@ -1,7 +1,9 @@
+import 'package:aora_new/auth_notifier/auth_notifier.dart';
 import 'package:aora_new/components/widgets/gradient_button.dart';
 import 'package:aora_new/components/widgets/video.dart';
 import 'package:aora_new/utils/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -40,13 +42,18 @@ class _ProfilePageState extends State<ProfilePage> {
               children: [
                 Container(
                   padding: EdgeInsets.only(right: 24),
-                  child: GestureDetector(
-                    onTap: () async {},
-                    child: Icon(
-                      Icons.logout,
-                      color: Colors.red,
-                    ),
-                  ),
+                  child: Consumer(builder: (context, ref, widget) {
+                    final authNotifier = ref.watch(authProvider.notifier);
+                    return GestureDetector(
+                      onTap: () async {
+                        await authNotifier.logout();
+                      },
+                      child: Icon(
+                        Icons.logout,
+                        color: Colors.red,
+                      ),
+                    );
+                  }),
                 ),
               ],
             ),
