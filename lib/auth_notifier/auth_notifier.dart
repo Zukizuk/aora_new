@@ -24,6 +24,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
   /// and update the state based on the result
   authenticate() async {
     try {
+      state = state.copyWith(status: AuthStatus.authenticating);
       final authProvider = GetIt.I.get<Appwrite>();
       final user = await authProvider.getAccount();
       state = state.copyWith(
@@ -55,6 +56,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
   /// Function to log user in and update the state accordingly
   login(String email, String password) async {
     try {
+      state = state.copyWith(status: AuthStatus.loading);
       await authProvider.createEmailSession(email, password);
       authenticate();
     } on AppwriteException catch (e) {
