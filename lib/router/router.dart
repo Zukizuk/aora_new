@@ -1,6 +1,7 @@
 import 'package:aora_new/auth_notifier/auth_notifier.dart';
 import 'package:aora_new/auth_notifier/auth_state.dart';
 import 'package:aora_new/components/layouts/layout.dart';
+import 'package:aora_new/pages/loading_page.dart';
 import 'package:aora_new/pages/sign_in_page.dart';
 import 'package:aora_new/pages/sign_up_page.dart';
 import 'package:go_router/go_router.dart';
@@ -16,10 +17,16 @@ final routerProvider = Provider<GoRouter>(
           GoRoute(
             name: 'home',
             path: '/',
-            builder: (_, __) => const Layout(),
+            builder: (_, __) {
+              if (authState.status == AuthStatus.authenticating) {
+                return const LoadingPage();
+              } else {
+                return const Layout();
+              }
+            },
           ),
           GoRoute(
-            name: Layout.name,
+            name: SignUpPage.name,
             path: '/signup',
             builder: (_, __) {
               return SignUpPage(onSignup: (name, email, password) async {
@@ -39,6 +46,11 @@ final routerProvider = Provider<GoRouter>(
         ],
         redirect: (context, state) {
           final location = state.matchedLocation;
+
+          if (authState.status == AuthStatus.loading) {
+            return null;
+          }
+
           if (location == '/signup' || location == '/signin') {
             if (authState.status == AuthStatus.authenticated) {
               return '/';
