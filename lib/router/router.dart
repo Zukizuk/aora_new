@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:aora_new/appwrite/appwrite.dart';
 import 'package:aora_new/components/layouts/layout.dart';
+import 'package:aora_new/pages/sign_in_page.dart';
 import 'package:aora_new/pages/sign_up_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -12,8 +13,21 @@ final routerProvider = Provider<GoRouter>(
     return GoRouter(
       routes: [
         GoRoute(
-          name: Layout.name,
+          name: SignInPage.name,
           path: '/',
+          builder: (_, __) {
+            return SignInPage(onSignin: (email, password) async {
+              debugPrint('email: $email, password: $password');
+              final appwrite = GetIt.instance.get<Appwrite>();
+              final session =
+                  await appwrite.createEmailSession(email, password);
+              debugPrint(jsonEncode(session?.toMap() ?? '{}'));
+            });
+          },
+        ),
+        GoRoute(
+          name: Layout.name,
+          path: '/signup',
           builder: (_, __) {
             return SignUpPage(onSignup: (name, email, password) async {
               debugPrint('name: $name, email: $email, password: $password');
@@ -24,10 +38,19 @@ final routerProvider = Provider<GoRouter>(
             });
           },
         ),
-        // GoRoute(
-        //     name: SignUpPage.name,
-        //     path: '/sign-up',
-        //     builder: (_, __) => const SignUpPage(onSignup: (),)),
+        GoRoute(
+          name: SignInPage.name,
+          path: '/signin',
+          builder: (_, __) {
+            return SignInPage(onSignin: (email, password) async {
+              debugPrint('email: $email, password: $password');
+              final appwrite = GetIt.instance.get<Appwrite>();
+              final session =
+                  await appwrite.createEmailSession(email, password);
+              debugPrint(jsonEncode(session?.toMap() ?? '{}'));
+            });
+          },
+        ),
       ],
     );
   },
