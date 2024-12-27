@@ -13,7 +13,7 @@ final authProvider =
 /// and also provide methods for authentication that in
 /// turn will use the Appwrite authentication methods
 class AuthNotifier extends StateNotifier<AuthState> {
-  AuthNotifier() : super(AuthState(status: AuthStatus.loading)) {
+  AuthNotifier() : super(AuthState(status: AuthStatus.authenticating)) {
     authenticate();
   }
 
@@ -24,7 +24,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
   /// and update the state based on the result
   authenticate() async {
     try {
-      state = state.copyWith(status: AuthStatus.authenticating);
       final authProvider = GetIt.I.get<Appwrite>();
       final user = await authProvider.getAccount();
       state = state.copyWith(

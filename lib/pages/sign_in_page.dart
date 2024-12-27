@@ -1,3 +1,5 @@
+import 'package:aora_new/auth_notifier/auth_notifier.dart';
+import 'package:aora_new/auth_notifier/auth_state.dart';
 import 'package:aora_new/components/widgets/gradient_button.dart';
 import 'package:aora_new/components/widgets/text_field.dart';
 import 'package:aora_new/pages/sign_up_page.dart';
@@ -5,6 +7,7 @@ import 'package:aora_new/types/types.dart';
 import 'package:aora_new/utils/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 class SignInPage extends StatefulWidget {
@@ -84,14 +87,17 @@ class _SignInPageState extends State<SignInPage> {
                 const SizedBox(height: 20),
                 SizedBox(
                   width: double.infinity,
-                  child: GradientButton(
-                    text: 'Sign In',
-                    onPressed: () => widget.onSignin(
-                      emailController.text,
-                      passwordController.text,
-                    ),
-                    isLoading: isLoading,
-                  ),
+                  child: Consumer(builder: (context, ref, _) {
+                    final authState = ref.watch(authProvider);
+                    return GradientButton(
+                      text: 'Sign In',
+                      onPressed: () => widget.onSignin(
+                        emailController.text,
+                        passwordController.text,
+                      ),
+                      isLoading: authState.status == AuthStatus.loading,
+                    );
+                  }),
                 ),
                 const SizedBox(height: 20),
                 Center(
