@@ -1,4 +1,3 @@
-import 'package:aora_new/components/layouts/layout.dart';
 import 'package:aora_new/dependencies.dart';
 import 'package:aora_new/router/router.dart';
 import 'package:aora_new/utils/app_theme.dart';

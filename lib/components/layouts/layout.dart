@@ -6,6 +6,7 @@ import 'package:aora_new/utils/theme.dart';
 import 'package:flutter/material.dart';
 
 class Layout extends StatefulWidget {
+  static const String name = 'Layout';
   const Layout({super.key});
 
   @override
