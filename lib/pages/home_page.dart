@@ -1,16 +1,18 @@
+import 'package:aora_new/auth_notifier/auth_notifier.dart';
 import 'package:aora_new/components/widgets/carousel_slider.dart';
 import 'package:aora_new/components/widgets/video.dart';
 import 'package:aora_new/utils/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  ConsumerState<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends ConsumerState<HomePage> {
   TextEditingController searchController = TextEditingController();
 
   String username = '';
@@ -65,6 +67,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final authState = ref.watch(authProvider);
     return Padding(
       padding: EdgeInsets.only(top: 72.0),
       child: Column(
@@ -94,7 +97,7 @@ class _HomePageState extends State<HomePage> {
                             Text(
                               response.isNotEmpty
                                   ? searchController.text.trim()
-                                  : 'John Doe'.toLowerCase(),
+                                  : authState.user?.name.toLowerCase() ?? "",
                               style: TextStyle(
                                 fontSize: 24.0,
                                 fontWeight: FontWeight.bold,

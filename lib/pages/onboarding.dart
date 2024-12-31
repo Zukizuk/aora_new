@@ -1,6 +1,8 @@
 import 'package:aora_new/components/widgets/gradient_button.dart';
+import 'package:aora_new/pages/sign_up_page.dart';
 import 'package:aora_new/utils/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class Onboarding extends StatelessWidget {
   const Onboarding({super.key});
@@ -90,7 +92,9 @@ class Onboarding extends StatelessWidget {
           const SizedBox(height: 25),
           GradientButton(
             text: 'Continue with Email',
-            onPressed: () {},
+            onPressed: () {
+              context.goNamed(SignUpPage.name);
+            },
           ),
         ],
       ),

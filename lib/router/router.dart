@@ -2,6 +2,7 @@ import 'package:aora_new/auth_notifier/auth_notifier.dart';
 import 'package:aora_new/auth_notifier/auth_state.dart';
 import 'package:aora_new/components/layouts/layout.dart';
 import 'package:aora_new/pages/loading_page.dart';
+import 'package:aora_new/pages/onboarding.dart';
 import 'package:aora_new/pages/sign_in_page.dart';
 import 'package:aora_new/pages/sign_up_page.dart';
 import 'package:go_router/go_router.dart';
@@ -43,6 +44,11 @@ final routerProvider = Provider<GoRouter>(
               });
             },
           ),
+          GoRoute(
+            name: 'Onboarding',
+            path: '/onboarding',
+            builder: (_, __) => const Onboarding(),
+          ),
         ],
         redirect: (context, state) {
           final location = state.matchedLocation;
@@ -59,7 +65,7 @@ final routerProvider = Provider<GoRouter>(
 
           if (location == '/') {
             if (authState.status == AuthStatus.unauthenticated) {
-              return '/signin';
+              return '/onboarding';
             }
           }
           return null;

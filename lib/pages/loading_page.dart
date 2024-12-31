@@ -10,7 +10,7 @@ class LoadingPage extends StatelessWidget {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
+          children: [
             Text(
               'Aora',
               style: TextStyle(fontSize: 32, color: AppColors.primary),

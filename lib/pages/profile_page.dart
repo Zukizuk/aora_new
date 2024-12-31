@@ -5,14 +5,14 @@ import 'package:aora_new/utils/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ProfilePage extends StatefulWidget {
+class ProfilePage extends ConsumerStatefulWidget {
   const ProfilePage({super.key});
 
   @override
-  State<ProfilePage> createState() => _ProfilePageState();
+  ConsumerState<ProfilePage> createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _ProfilePageState extends ConsumerState<ProfilePage> {
   String username = '';
 
   final videos = [
@@ -33,6 +33,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final authNotifier = ref.watch(authProvider.notifier);
+    final authState = ref.watch(authProvider);
     return Padding(
         padding: EdgeInsets.only(top: 58.0),
         child: Column(
@@ -41,10 +43,8 @@ class _ProfilePageState extends State<ProfilePage> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Container(
-                  padding: EdgeInsets.only(right: 24),
-                  child: Consumer(builder: (context, ref, widget) {
-                    final authNotifier = ref.watch(authProvider.notifier);
-                    return GestureDetector(
+                    padding: EdgeInsets.only(right: 24),
+                    child: GestureDetector(
                       onTap: () async {
                         await authNotifier.logout();
                       },
@@ -52,9 +52,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         Icons.logout,
                         color: Colors.red,
                       ),
-                    );
-                  }),
-                ),
+                    )),
               ],
             ),
             Center(
@@ -81,7 +79,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    'Zuki',
+                    authState.user?.name ?? '',
                     style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
